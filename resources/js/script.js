@@ -408,6 +408,7 @@ function addPoint() {
         + "<td class='heading'><input type='number' value='0'></td>"
         + "<td class='comments'><input type='search' placeholder='Comments'></td>"
         + "<td class='enabled'><input type='checkbox' checked></td>"
+        + "<td class='backwards'><input type='checkbox' unchecked></td>"
         + "<td class='delete'><button onclick='$(this).parent().parent().remove();update()'>&times;</button></td></tr>");
 	update();
 	rebind();
@@ -449,11 +450,11 @@ function update() {
         }
 		let comment = ($($($(this).children()).children()[3]).val());
         let enabled = ($($($(this).children()).children()[4]).prop('checked'));
+        let backwards = ($($($(this).children()).children()[5]).prop('checked'));
 		if (enabled) {
             waypoints.push(new Pose2d(new Translation2d(x, y), Rotation2d.fromDegrees(heading), comment));
             if (i > 0) {
-                let points = JSON.parse(Module.gen_spline(prev_x, prev_y, prev_heading, x, y, heading)).points;
-                console.log("points");
+                let points = JSON.parse(Module.gen_spline(prev_x, prev_y, prev_heading, x, y, heading, backwards)).points;
 
                 for (let i in points) {
                     let point = points[i];

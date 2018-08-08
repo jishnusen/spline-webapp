@@ -35,6 +35,7 @@
                 <th>Heading</th>
                 <th>Comments</th>
                 <th>Enabled</th>
+                <th>Backwards</th>
                 <th>Delete</th>
             </thead>
             <tbody>
@@ -45,6 +46,7 @@
                     <td class='heading'><input type='number' value='0'></td>
                     <td class='comments'><input type='search' placeholder='Comments'></td>
                     <td class='enabled'><input type='checkbox' checked></td>
+                    <td class='backwards'><input type='checkbox' unchecked></td>
                     <td class='delete'><button onclick='$(this).parent().parent().remove();update()'>&times;</button></td>
                 </tr>
             </tbody>
