@@ -534,3 +534,33 @@ function drawSplines(fill, animate) {
         });
     }
 }
+
+function download(table, auto_name) {
+  var text = "";
+
+  for (var i = 0, row; row = table.rows[i]; i++) {
+    for (var j = 0, cell; cell = row.cells[j]; j++) {
+      if (cell != row.cells[0] && cell != row.cells[row.cells.length - 1]) {
+        if (cell.tagName != "TD") {
+          text += cell.innerHTML;
+        } else if (cell.firstChild.type == "checkbox") {
+          text += cell.firstChild.checked;
+        } else {
+          text += cell.firstChild.value;
+        }
+        if (cell != row.cells[row.cells.length - 2]) {
+          text += ","
+        }
+      }
+    }
+    text += "\n";
+  }
+
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', auto_name + ".csv");
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}

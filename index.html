@@ -25,9 +25,10 @@
             <button onclick='update()'>Update</button>
             <button onclick='draw(3)'>Animate</button>
             <button onclick='flipField()'>Flip Field</button>
+            <button onclick='download(document.getElementById("autopoints"), document.getElementById("title").value)'>Download</button>
             <span class='checkbox'>Is reversed: <input type='checkbox' id='isReversed'></span>
         </div>
-        <table>
+        <table id = "autopoints">
             <thead>
                 <th></th>
                 <th>X</th>
