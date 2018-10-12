@@ -53,7 +53,7 @@ class Translation2d {
     inverse() {
 		return new Translation2d(-this.x, -this.y);
     }
-    
+
     interpolate(other, x) {
         if (x <= 0) {
             return new Translation2d(this.x, this.y);
@@ -74,7 +74,7 @@ class Translation2d {
     static dot(a, b) {
 		return a.x * b.x + a.y * b.y;
     }
-    
+
     static getAngle(a, b) {
         let cos_angle = this.dot(a, b) / (a.norm() * b.norm());
         if (Double.isNaN(cos_angle)) {
@@ -211,7 +211,7 @@ class Pose2d {
         return new Pose2d(new Translation2d(delta.dx * s - delta.dy * c, delta.dx * c + delta.dy * s),
                 new Rotation2d(cos_theta, sin_theta, false));
     }
-    
+
     static log(transform) {
         let dtheta = transform.getRotation().getRadians();
         let half_dtheta = 0.5 * dtheta;
@@ -284,7 +284,7 @@ class Pose2d {
 		ctx.stroke();
         ctx.closePath();
 	}
-	
+
 	toString() {
 		return "new Pose2d(new Translation2d(" + this.translation.x + ", " + this.translation.y + "), new Rotation2d(" + this.rotation.cos + ", " + this.rotation.sin + ", " + this.rotation.normalize + "))";
 	}
@@ -534,8 +534,6 @@ function drawSplines(fill, animate) {
         });
     }
 }
-<<<<<<< Updated upstream
-=======
 
 function download(table, auto_name) {
   var text = "";
@@ -631,4 +629,3 @@ function upload() {
       alert("Please upload a valid CSV file.");
   }
 }
->>>>>>> Stashed changes
