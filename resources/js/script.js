@@ -53,7 +53,7 @@ class Translation2d {
     inverse() {
 		return new Translation2d(-this.x, -this.y);
     }
-    
+
     interpolate(other, x) {
         if (x <= 0) {
             return new Translation2d(this.x, this.y);
@@ -74,7 +74,7 @@ class Translation2d {
     static dot(a, b) {
 		return a.x * b.x + a.y * b.y;
     }
-    
+
     static getAngle(a, b) {
         let cos_angle = this.dot(a, b) / (a.norm() * b.norm());
         if (Double.isNaN(cos_angle)) {
@@ -211,7 +211,7 @@ class Pose2d {
         return new Pose2d(new Translation2d(delta.dx * s - delta.dy * c, delta.dx * c + delta.dy * s),
                 new Rotation2d(cos_theta, sin_theta, false));
     }
-    
+
     static log(transform) {
         let dtheta = transform.getRotation().getRadians();
         let half_dtheta = 0.5 * dtheta;
@@ -284,7 +284,7 @@ class Pose2d {
 		ctx.stroke();
         ctx.closePath();
 	}
-	
+
 	toString() {
 		return "new Pose2d(new Translation2d(" + this.translation.x + ", " + this.translation.y + "), new Rotation2d(" + this.rotation.cos + ", " + this.rotation.sin + ", " + this.rotation.normalize + "))";
 	}
@@ -402,7 +402,7 @@ function addPoint() {
 	let prev;
 	if (waypoints.length > 0) prev = waypoints[waypoints.length - 1].translation;
 	else prev = new Translation2d(50, 50);
-	$("tbody").append("<tr>" + "<td class='drag-handler'></td>"
+	$(document.getElementById("autopoints")).append("<tr>" + "<td class='drag-handler'></td>"
         + "<td class='x'><input type='number' value='" + (prev.x + 1) + "'></td>"
         + "<td class='y'><input type='number' value='" + (prev.y + 1) + "'></td>"
         + "<td class='heading'><input type='number' value='0'></td>"
@@ -441,7 +441,7 @@ function update() {
 	waypoints = [];
     i = 0;
     splinePoints = [];
-	$('tbody').children('tr').each(function() {
+	$(document.getElementById("autopoints")).find("tbody>tr").each(function() {
 		let x = parseFloat($($($(this).children()).children()[0]).val());
 		let y = parseFloat($($($(this).children()).children()[1]).val());
 		let heading = parseFloat($($($(this).children()).children()[2]).val());
@@ -563,4 +563,69 @@ function download(table, auto_name) {
   document.body.appendChild(element);
   element.click();
   document.body.removeChild(element);
+}
+
+function resetTable() {
+	var table = document.getElementById("autopoints");
+	var rowCount = table.rows.length;
+	for (var i=0; i < rowCount - 1; i++) {
+			table.deleteRow(1);
+	}
+}
+
+function extract() {
+	resetTable();
+	var table = document.getElementById("hiddenTable").firstChild;
+	var current_row = [];
+	for (var i = 1, row; row = table.rows[i]; i++) {
+		for (var j = 0, cell; cell = row.cells[j]; j++) {
+			current_row.push(cell.innerHTML);
+		}
+
+		$(document.getElementById("autopoints")).append("<tr>" + "<td class='drag-handler'></td>"
+				+ "<td class='x'><input type='number' value='" + current_row[0] + "'></td>"
+				+ "<td class='y'><input type='number' value='" + current_row[1] + "'></td>"
+				+ "<td class='heading'><input type='number' value='" + current_row[2] + "'></td>"
+				+ "<td class='comments'><input type='search' value='" + current_row[3] + "' placeholder='Comments'></td>"
+				+ "<td class='enabled'><input type='checkbox'" + (current_row[4] == "true" ? "checked" : "") + " ></td>"
+				+ "<td class='backwards'><input type='checkbox'" + (current_row[5] == "true" ? "checked" : "") + "></td>"
+				+ "<td class='delete'><button onclick='$(this).parent().parent().remove();update()'>&times;</button></td></tr>");
+		current_row = [];
+
+  }
+	update();
+	rebind();
+}
+
+function upload() {
+  var fileUpload = document.getElementById("fileid");
+  var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+  if (regex.test(fileUpload.value.toLowerCase())) {
+      if (typeof (FileReader) != "undefined") {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+              var table = document.createElement("table");
+              var rows = e.target.result.split("\n");
+              for (var i = 0; i < rows.length; i++) {
+                  var cells = rows[i].split(",");
+                  if (cells.length > 1) {
+                      var row = table.insertRow(-1);
+                      for (var j = 0; j < cells.length; j++) {
+                          var cell = row.insertCell(-1);
+                          cell.innerHTML = cells[j];
+                      }
+                  }
+              }
+              var dvCSV = document.getElementById("hiddenTable");
+              dvCSV.innerHTML = "";
+              dvCSV.appendChild(table);
+          }
+          reader.readAsText(fileUpload.files[0]);
+					setTimeout(extract, 10);
+      } else {
+          alert("This browser does not support HTML5.");
+      }
+  } else {
+      alert("Please upload a valid CSV file.");
+  }
 }
