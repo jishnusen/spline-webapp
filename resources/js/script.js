@@ -643,7 +643,12 @@ function SetFieldPosition(){
 
 	text += "SetFieldPosition(" + table.rows[1].cells[1].firstChild.value;
 	text += ", " + table.rows[1].cells[2].firstChild.value;
-	text += ", " + table.rows[1].cells[3].firstChild.value + " * deg);\n\n";
+
+	if (table.rows[1].cells[3].firstChild.value == 0) {
+		text += ", 0"
+	} else {
+		 text += ", " + table.rows[1].cells[3].firstChild.value + " * deg);\n\n";
+	}
 
 	return text;
 }
