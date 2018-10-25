@@ -673,7 +673,7 @@ function withdraw() {
 		} else {
 			 text += ", " + current_row[3].value + " * deg, ";
 		}
-		if (current_row[5].checked){
+		if (current_row[6].checked){
 			text += ", -1";
 		} else {
 			text += ", 1";
