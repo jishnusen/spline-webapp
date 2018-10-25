@@ -629,3 +629,121 @@ function upload() {
       alert("Please upload a valid CSV file.");
   }
 }
+
+function capitalize(str) {
+	str = str.toLowerCase().split(' ');
+  for (var i = 0; i < str.length; i++) {
+    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+  }
+  return str.join(' ');
+}
+function SetFieldPosition(){
+	var text = "\t";
+	var table = document.getElementById("autopoints");
+
+	text += "SetFieldPosition(" + table.rows[1].cells[1].firstChild.value;
+	text += ", " + table.rows[1].cells[2].firstChild.value;
+	text += ", " + table.rows[1].cells[3].firstChild.value + " * deg);\n\n";
+
+	return text;
+}
+
+function withdraw() {
+	var text = "";
+	var table = document.getElementById("autopoints");
+	var current_row = [];
+
+	for (var i = 2, row; row = table.rows[i]; i++) {
+		for (var j = 0, cell; cell = row.cells[j]; j++) {
+			current_row.push(cell.firstChild);
+		}
+
+		if (current_row[4].value !== "") {
+			text += "\t// " + current_row[4].value + "\n";
+		}
+		text += "\tStartDrivePath(" + current_row[1].value;
+		text += ", " + current_row[2].value;
+		if (current_row[3].value == 0) {
+			text += ", 0"
+		} else {
+			 text += ", " + current_row[3].value + " * deg, ";
+		}
+		if (current_row[5].checked){
+			text += ", -1";
+		} else {
+			text += ", 1";
+		}
+		text += ", kHighGear);\n";
+		text += "\tWaitUntilDriveComplete();\n\n";
+		current_row = [];
+	}
+
+	return text;
+}
+
+
+function makeHFile(auto_name) {
+	var cap_auto_name = capitalize(document.getElementById("title").value.toString());
+	var text = "";
+
+	text += "#ifndef C2018_AUTONOMOUS_" + auto_name.toLocaleUpperCase().replace(/ /g,"_") + "_H_\n";
+	text += "#define C2018_AUTONOMOUS_" + auto_name.toLocaleUpperCase().replace(/ /g,"_") + "_H_\n\n";
+
+	text += "#include \"c2018/autonomous/autonomous_base.h\"\n";
+	text += "#include \"muan/logging/logger.h\"\n\n";
+
+	text += "namespace c2018 {\n";
+	text += "namespace autonomous {\n\n";
+
+	text += "class " + cap_auto_name.replace(/\s/g, '') + " : public c2018::autonomous::AutonomousBase {\n";
+	text += " public:\n";
+	text += "\tvoid " + cap_auto_name.replace(/\s/g, '') + "();\n";
+	text += "};\n\n";
+
+	text += "}  // namespace autonomous\n";
+	text += "}  // namespace c2018\n\n";
+
+	text += "#endif  // C2018_AUTONOMOUS_" + auto_name.toLocaleUpperCase().replace(/ /g,"_") + "_H_";
+
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', auto_name + ".h");
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+
+function makeCode(table, auto_name) {
+	var cap_auto_name = capitalize(document.getElementById("title").value.toString());
+	var text = "";
+
+	text += "#include \"c2018/autonomous/" + auto_name.replace(/ /g,"_") + ".h\"\n\n";
+
+	text += "namespace c2018 {\n";
+	text += "namespace autonomous {\n\n";
+
+	text += "using frc971::control_loops::drivetrain::Gear::kHighGear;\n";
+	text += "using frc971::control_loops::drivetrain::Gear::kLowGear;\n";
+	text += "using muan::units::deg;\n\n";
+
+	text += "void " + cap_auto_name.replace(/\s/g, '') + "::" + cap_auto_name.replace(/\s/g, '') + "() {\n";
+
+	text += SetFieldPosition();
+	text += withdraw();
+
+	text += "}\n\n";
+
+	text += "}  // namespace autonomous\n";
+	text += "}  // namespace c2018\n\n";
+
+
+	var element = document.createElement('a');
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	element.setAttribute('download', auto_name + ".cpp");
+	element.style.display = 'none';
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
+	makeHFile(document.getElementById("title").value.replace(/ /g,"_"));
+}

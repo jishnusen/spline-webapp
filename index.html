@@ -27,7 +27,8 @@
             <button onclick='flipField()'>Flip Field</button>
             <button id='csvUpdate' onclick='fileid.click()'type="file"> Upload</button>
             <button id='upload' onclick='upload()'>Update CSV</button>
-            <button onclick='download(document.getElementById("autopoints"), document.getElementById("title").value)'>Download</button>
+            <button onclick='makeCode(document.getElementById("autopoints"), document.getElementById("title").value.replace(/ /g,"_"))'>Make Code</button>
+            <button onclick='download(document.getElementById("autopoints"), document.getElementById("title").value.replace(/ /g,"_"))'>Download</button>
             <span class='checkbox'>Is reversed: <input type='checkbox' id='isReversed'></span>
         </div>
         <table id='hiddenTable' /hidden>
