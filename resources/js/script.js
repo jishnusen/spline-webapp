@@ -454,7 +454,8 @@ function update() {
 		if (enabled) {
             waypoints.push(new Pose2d(new Translation2d(x, y), Rotation2d.fromDegrees(heading), comment));
             if (i > 0) {
-                let points = JSON.parse(Module.gen_spline(prev_x, prev_y, prev_heading, x, y, heading, backwards)).points;
+                let points = JSON.parse(Module.gen_spline(prev_x, prev_y, prev_heading * (3.14 / 180.), x, y, heading * (3.14 / 180.), backwards)).points;
+                console.log(points);
 
                 for (let i in points) {
                     let point = points[i];
