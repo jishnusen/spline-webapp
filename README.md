@@ -6,3 +6,7 @@ Spline coordinates generated private C++ spline generation. (see [here](https://
 for archived code.
 
 C++ code is compiled to WASM for client-side spline generation. Coordinates are processed as "poses". Logic found at `resources/js/script.js`.
+
+Hosted on my github pages [here](https://jishnusen.github.io/spline-webapp/). 
+
+![](https://i.imgur.com/vlS0bFz.png)
